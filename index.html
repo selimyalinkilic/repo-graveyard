@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Repo Graveyard: walk through your abandoned GitHub repos in 3D</title>
+  <meta name="description" content="Type a GitHub username and walk through a 3D graveyard of abandoned repos. Every stone has a cause of death. Get your death rate and a shareable poster. Free, no login.">
+  <meta name="keywords" content="github, abandoned repos, side projects, developer tools, github stats, repo graveyard, three.js">
+  <meta name="author" content="Selim Yalınkılıç">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0d1a">
+  <link rel="canonical" href="https://selimyalinkilic.github.io/repo-graveyard/">
+  <link rel="alternate" hreflang="en" href="https://selimyalinkilic.github.io/repo-graveyard/">
+  <link rel="alternate" hreflang="tr" href="https://selimyalinkilic.github.io/repo-graveyard/?lang=tr">
+  <link rel="alternate" hreflang="x-default" href="https://selimyalinkilic.github.io/repo-graveyard/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Repo Graveyard">
+  <meta property="og:title" content="Repo Graveyard: where abandoned GitHub repos rest in peace">
+  <meta property="og:description" content="Walk through a 3D graveyard of your abandoned GitHub repos. What's your death rate?">
+  <meta property="og:url" content="https://selimyalinkilic.github.io/repo-graveyard/">
+  <meta property="og:image" content="https://selimyalinkilic.github.io/repo-graveyard/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A moonlit 3D graveyard gate with the title Repo Graveyard">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="tr_TR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Repo Graveyard: where abandoned GitHub repos rest in peace">
+  <meta name="twitter:description" content="Walk through a 3D graveyard of your abandoned GitHub repos. What's your death rate?">
+  <meta name="twitter:image" content="https://selimyalinkilic.github.io/repo-graveyard/og.png">
+  <meta name="twitter:image:alt" content="A moonlit 3D graveyard gate with the title Repo Graveyard">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Repo Graveyard",
+    "url": "https://selimyalinkilic.github.io/repo-graveyard/",
+    "description": "A 3D graveyard of a GitHub user's abandoned repositories, with causes of death, stats and a shareable poster.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (web browser)",
+    "browserRequirements": "Requires WebGL 2 for the 3D view; falls back to 2D.",
+    "inLanguage": ["en", "tr"],
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "image": "https://selimyalinkilic.github.io/repo-graveyard/og.png",
+    "author": { "@type": "Person", "name": "Selim Yalınkılıç", "url": "https://github.com/selimyalinkilic" },
+    "codeRepository": "https://github.com/selimyalinkilic/repo-graveyard"
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- 2D yedek arka plan (WebGL yoksa) -->
+  <div class="sky" aria-hidden="true">
+    <div class="stars stars--far"></div>
+    <div class="stars stars--near"></div>
+  </div>
+  <div class="moon" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="./" id="home" aria-label="Repo Graveyard">
+      <svg viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path d="M14 60V26a18 18 0 0 1 36 0v34z" fill="currentColor"/><path d="M32 22v18M25 29h14" stroke="#0a0d1a" stroke-width="4" stroke-linecap="round"/></svg>
+      <span data-i18n="brand">Repo Graveyard</span>
+    </a>
+    <div class="topbar__right">
+      <button type="button" class="btn btn--quiet btn--sm yard-only" id="newSearch"><i data-icon="search"></i><span data-i18n="newSearch">Another graveyard</span></button>
+      <div class="lang" role="group" aria-label="Dil / Language">
+        <button type="button" data-lang="tr">TR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <p class="eyebrow" data-i18n="eyebrow">Requiescat in Push</p>
+      <h1 data-i18n="title">Repo Graveyard</h1>
+      <p class="lede" data-i18n="lede">The final resting place of abandoned repos. Type a GitHub username and walk among the unfinished dreams.</p>
+
+      <form class="search" id="form" autocomplete="off">
+        <label class="field">
+          <span class="field__prefix">github.com/</span>
+          <input id="username" name="u" type="text" spellcheck="false" autocapitalize="off" required
+                 data-i18n-placeholder="placeholder" placeholder="username">
+        </label>
+        <button class="btn btn--primary btn--attached" type="submit">
+          <span data-i18n="open">Open the graveyard</span>
+          <i data-icon="arrowRight"></i>
+        </button>
+      </form>
+
+      <div class="options">
+        <div class="seg" role="radiogroup" data-i18n-aria="thresholdLabel" aria-label="Time until considered dead">
+          <span class="seg__label" data-i18n="deadAfter">Dead after:</span>
+          <button type="button" role="radio" data-days="182" data-i18n="m6">6 months</button>
+          <button type="button" role="radio" data-days="365" data-i18n="y1">1 year</button>
+          <button type="button" role="radio" data-days="730" data-i18n="y2">2 years</button>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="forks">
+          <span class="check__box" aria-hidden="true"></span>
+          <span data-i18n="forks">Bury forks too</span>
+        </label>
+      </div>
+
+      <section class="status" id="status" aria-live="polite" hidden></section>
+    </section>
+
+    <!-- 3D mezarlık arayüzü -->
+    <section class="hud" id="hud" hidden>
+      <div class="ledger ledger--hud" id="ledger"></div>
+      <div class="hud__actions">
+        <button type="button" class="btn btn--secondary" id="aliveBtn"><i data-icon="activity"></i><span id="aliveLabel"></span></button>
+        <button type="button" class="btn btn--secondary" id="copy"><i data-icon="link"></i><span data-i18n="copy">Copy link</span></button>
+        <button type="button" class="btn btn--primary" id="posterBtn"><i data-icon="image"></i><span data-i18n="poster">Make a poster</span></button>
+      </div>
+    </section>
+    <p class="hint is-gone" id="hint" data-i18n="hint">Scroll or drag to walk · Click a stone to read it</p>
+
+    <aside class="card" id="card" hidden aria-live="polite"></aside>
+    <aside class="drawer" id="drawer" hidden></aside>
+    <div class="tip" id="tip" hidden></div>
+
+    <div class="loader" id="loader" hidden>
+      <span class="flame" aria-hidden="true"></span>
+      <span id="loaderText" data-i18n="loading">Preparing the graveyard…</span>
+      <span class="loader__bar"><i id="loaderBar"></i></span>
+    </div>
+
+    <!-- 2D yedek görünüm -->
+    <section class="results" id="results" hidden>
+      <div class="ledger" id="ledger2d"></div>
+      <div class="yard" id="yard"></div>
+      <div class="alive" id="alive"></div>
+    </section>
+  </main>
+
+  <dialog class="poster" id="posterDlg">
+    <form method="dialog" class="poster__head">
+      <h2 data-i18n="posterTitle">Share poster</h2>
+      <button class="icon-btn" value="close" aria-label="Close"><i data-icon="x"></i></button>
+    </form>
+    <div class="poster__tabs" role="tablist">
+      <button type="button" role="tab" data-format="x">X / Twitter</button>
+      <button type="button" role="tab" data-format="ig">Instagram</button>
+      <button type="button" role="tab" data-format="story">Story</button>
+    </div>
+    <div class="poster__preview"><img id="posterImg" alt=""><span class="poster__wait flame" id="posterWait"></span></div>
+    <div class="poster__actions">
+      <button type="button" class="btn btn--primary" id="posterDownload"><i data-icon="download"></i><span data-i18n="download">Download PNG</span></button>
+      <button type="button" class="btn btn--secondary" id="posterCopy"><i data-icon="copy"></i><span data-i18n="copyImage">Copy image</span></button>
+      <button type="button" class="btn btn--secondary" id="posterShare"><i data-icon="share"></i><span data-i18n="share">Share</span></button>
+      <a class="btn btn--secondary" id="tweet" target="_blank" rel="noopener"><span data-i18n="tweet">Share on X</span><i data-icon="external"></i></a>
+    </div>
+    <p class="poster__note" data-i18n="posterNote">When sharing on X, attach the downloaded image to your post.</p>
+  </dialog>
+
+  <div class="fog" aria-hidden="true"><div></div><div></div></div>
+
+  <footer class="foot">
+    <p data-i18n="foot">Only public repos are visible. Data comes straight from GitHub and is processed in your browser.</p>
+    <p class="credits">3D: <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a> (CC0) · <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a></p>
+  </footer>
+
+  <noscript>
+    <section class="noscript">
+      <h2>Repo Graveyard needs JavaScript</h2>
+      <p>Repo Graveyard reads a GitHub user's public repositories and lays the abandoned ones to rest in a 3D graveyard: one tombstone per repo, with its lifespan, its last push and a cause of death. It also calculates your death rate and makes a shareable poster. Everything runs in your browser.</p>
+    </section>
+  </noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
