@@ -60,6 +60,7 @@ const UI = {
     today: "bugün",
     tweetText: (n, r) => `GitHub mezarlığımda ${n} repo yatıyor, ölüm oranım %${r} 🪦\n\nSeninki kaç?`,
     tabTitle: (u) => `${u} · Repo Graveyard`,
+    pct: (n) => `%${n}`,
     docTitle: "Repo Graveyard: terk edilmiş GitHub repolarını 3D mezarlıkta gez",
     posterTitle2: (u) => `${u} mezarlığı`,
     posterBuried: (d, t) => `${t} repodan ${trAccusative(d)} toprak altında`,
@@ -118,6 +119,7 @@ const UI = {
     today: "today",
     tweetText: (n, r) => `${n} repos rest in my GitHub graveyard. Death rate: ${r}% 🪦\n\nWhat's yours?`,
     tabTitle: (u) => `${u} · Repo Graveyard`,
+    pct: (n) => `${n}%`,
     docTitle: "Repo Graveyard: walk through your abandoned GitHub repos in 3D",
     posterTitle2: (u) => `${u}'s graveyard`,
     posterBuried: (d, t) => `${d} of ${t} repos buried`,
@@ -246,7 +248,7 @@ function ledgerHtml(withAvatar) {
       <span class="ledger__sub">${T.ledgerSub(s.total)}</span>
     </div>
     <div class="stat"><div class="stat__label">${T.buried}</div><div class="stat__value"><span class="num">${s.dead}</span><span class="stat__of"> / ${s.total}</span></div></div>
-    <div class="stat"><div class="stat__label">${T.rate}</div><div class="stat__value"><span class="num">%${s.rate}</span></div></div>
+    <div class="stat"><div class="stat__label">${T.rate}</div><div class="stat__value"><span class="num">${T.pct(s.rate)}</span></div></div>
     <div class="stat"><div class="stat__label">${T.oldest}</div><div class="stat__value stat__value--small">${s.oldest ? esc(s.oldest.name) : T.none}</div><div class="stat__hint">${s.oldest ? T.deadFor(dur(idleDays(s.oldest, now))) : "&nbsp;"}</div></div>
     <div class="stat"><div class="stat__label">${T.topLang}</div><div class="stat__value stat__value--small">${s.topLang ? esc(s.topLang[0]) : T.none}</div><div class="stat__hint">${s.topLang ? `× ${s.topLang[1]}` : "&nbsp;"}</div></div>`;
 }

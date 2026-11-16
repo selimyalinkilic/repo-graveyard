@@ -154,7 +154,7 @@ export async function makePoster(scene, { format = "x", profile, stats, T, url }
   }
 
   // büyük sayı
-  const big = `%${stats.rate}`;
+  const big = T.pct(stats.rate);
   const bigSize = (portrait ? 230 : 150) * S;
   g.font = `700 ${bigSize}px ${serif}`;
   const bigGrad = g.createLinearGradient(0, y - bigSize * 0.8, 0, y);
