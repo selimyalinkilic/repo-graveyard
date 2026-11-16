@@ -1,0 +1,10 @@
+{
+  "name": "repo-mezarligi",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "dev": "python3 -m http.server 8765",
+    "shot": "node tools/shot.mjs"
+  }
+}
