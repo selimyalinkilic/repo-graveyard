@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://selimyalinkilic.github.io/repo-graveyard/sitemap.xml
