@@ -3,6 +3,9 @@ import {
   formatDuration, lastActivity, STRINGS, trAccusative,
 } from "./core.js";
 import { FORMATS, makePoster } from "./poster.js";
+import { initAnalytics, track } from "./analytics.js";
+
+initAnalytics();
 import { icon, hydrateIcons } from "./icons.js";
 
 const UI = {
@@ -406,11 +409,13 @@ async function open(user) {
     syncUrl();
     applyI18n();
     render();
+    track("graveyard_open", { dead: state.view?.stats?.dead ?? 0, total: repos.length, lang: state.lang });
     if (!state.scene) $("#ledger2d").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (e) {
     const T = t();
     const msg = e.kind === "notFound" ? T.notFound(esc(user)) : e.kind === "rateLimit" ? T.rateLimit(e.extra) : T.netError;
     showStatus(msg, true);
+    track("graveyard_error", { kind: e.kind || "network" });
   }
 }
 
@@ -466,6 +471,7 @@ function posterFileName() {
 }
 
 $("#posterBtn").addEventListener("click", () => {
+  track("poster_open");
   $("#posterDlg").showModal();
   buildPoster();
 });
@@ -478,12 +484,14 @@ $("#posterDownload").addEventListener("click", () => {
   a.href = URL.createObjectURL(posterBlob);
   a.download = posterFileName();
   a.click();
+  track("poster_download", { format: state.posterFormat });
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 });
 $("#posterCopy").addEventListener("click", async () => {
   if (!posterBlob) return;
   try {
     await navigator.clipboard.write([new ClipboardItem({ "image/png": posterBlob })]);
+    track("poster_copy", { format: state.posterFormat });
     const label = $("#posterCopy span");
     label.textContent = t().imageCopied;
     setTimeout(() => (label.textContent = t().copyImage), 1600);
@@ -494,6 +502,7 @@ $("#posterShare").addEventListener("click", async () => {
   const file = new File([posterBlob], posterFileName(), { type: "image/png" });
   try {
     await navigator.share({ files: [file], text: t().tweetText(state.view.stats.dead, state.view.stats.rate), url: shareUrl() });
+    track("poster_share", { format: state.posterFormat });
   } catch {}
 });
 
@@ -509,6 +518,7 @@ $("#forks").addEventListener("change", (e) => { state.forks = e.target.checked; 
 for (const b of document.querySelectorAll(".lang button")) {
   b.addEventListener("click", () => {
     state.lang = b.dataset.lang;
+    track("lang_switch", { lang: state.lang });
     try { localStorage.setItem("rg-lang", state.lang); } catch {}
     applyI18n();
     render();
@@ -517,6 +527,7 @@ for (const b of document.querySelectorAll(".lang button")) {
 
 $("#copy").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(shareUrl()); } catch { return; }
+  track("link_copy");
   const b = $("#copy");
   const label = b.querySelector("span");
   label.textContent = t().copied;
@@ -524,6 +535,7 @@ $("#copy").addEventListener("click", async () => {
 });
 
 $("#newSearch").addEventListener("click", backToLanding);
+$("#tweet").addEventListener("click", () => track("tweet_click"));
 $("#home").addEventListener("click", (e) => {
   if (!state.scene || !state.user) return;
   e.preventDefault();
