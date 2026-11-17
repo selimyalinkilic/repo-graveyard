@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://selimyalinkilic.github.io/repo-graveyard/"><b>Open Repo Graveyard →</b></a><br>
-  <sub>English · <a href="README.tr.md">Türkçe</a></sub>
+  <sub>English · <a href="README.tr.md">Türkçe</a> · <a href="https://dev.to/selimyalinkilic/i-built-a-3d-graveyard-for-my-abandoned-github-repos-18-of-22-are-dead-5bbc">How I built it</a></sub>
 </p>
 
 <p align="center">
