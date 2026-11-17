@@ -30,7 +30,9 @@ Bir reponun ne zaman ölü sayılacağını (6 ay, 1 yıl, 2 yıl) ve fork'ları
 
 ## Gizlilik
 
-Sunucu yok. Tarayıcın doğrudan GitHub'ın herkese açık API'sine bağlanır ve yalnızca herkese açık repolar görünür. Hiçbir şey kaydedilmez ya da izlenmez.
+Sunucu yok. Tarayıcın doğrudan GitHub'ın herkese açık API'sine bağlanır ve yalnızca herkese açık repolar görünür. Hiçbir şey kaydedilmez.
+
+Site, ziyaret sayısını ve hangi özelliklerin kullanıldığını (mezarlık açma, poster yapma) saymak için Google Analytics kullanır. GitHub kullanıcı adları gönderilmez.
 
 ## Yerelde çalıştırma
 

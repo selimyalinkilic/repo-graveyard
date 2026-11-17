@@ -34,7 +34,9 @@ You can choose when a repo counts as dead (6 months, 1 year, 2 years) and whethe
 
 ## Privacy
 
-There is no server. Your browser talks to the public GitHub API directly, and only public repos are visible. Nothing is stored or tracked.
+There is no server. Your browser talks to the public GitHub API directly, and only public repos are visible. Nothing is stored.
+
+The site uses Google Analytics to count visits and which features get used (opening a graveyard, making a poster). GitHub usernames are never sent.
 
 The unauthenticated GitHub API allows 60 requests per hour per IP. One graveyard takes 2 requests or more, depending on how many repos the user has.
 
